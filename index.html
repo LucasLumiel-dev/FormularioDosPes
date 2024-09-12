@@ -4,13 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina de envio</title>
+    <link rel="stylesheet" href="custon.css">
 </head>
 <body>
-    <h1>Image Uploader</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="image" accept="image/*">
-    <button type="submit">Upload Image</button>
-  </form>
-    
+    <h1>Envie Seu documento aqui!!!!!</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Enviar </button>
+        <div class="progress">
+            <progress id="upload-progress" value="0" max="100"></progress>
+            <span id="upload-status"></span>
+        </div>
+    </form>
+    <script>
+        const form = document.querySelector('form');
+        const fileInput = document.querySelector('input[type="file"]');
+        const progress = document.querySelector('#upload-progress');
+        const status = document.querySelector('#upload-status');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                status.textContent = `Upload successful!`;
+                progress.value = 100;
+            })
+            .catch((error) => {
+                status.textContent = `Error: ${error.message}`;
+            });
+        });
+    </script>
 </body>
 </html>

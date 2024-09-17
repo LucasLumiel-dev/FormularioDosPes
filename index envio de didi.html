@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de envio</title>
+    <link rel="stylesheet" href="custon.css">
+</head>
+<body>
+    <h1>Envie Seu documento aqui!!!!!</h1>
+    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Enviar</button>
+        <div class="progress">
+            <progress id="upload-progress" value="0" max="100"></progress>
+            <span id="upload-status"></span>
+        </div>
+    </form>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();  // Impede o envio padrão do formulário
+
+            var formData = new FormData(this);
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/upload', true);
+
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    var percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('upload-progress').value = percentComplete;
+                    document.getElementById('upload-status').textContent = Math.round(percentComplete) + '% concluído';
+                }
+            });
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Redireciona para outra página após o envio bem-sucedido
+                    window.location.href = '/pagina-de-sucesso';
+                } else {
+                    document.getElementById('upload-status').textContent = 'Erro ao enviar o arquivo.';
+                }
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
